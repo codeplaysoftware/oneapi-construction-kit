@@ -86,7 +86,7 @@ runs:
               -DCMAKE_C_COMPILER_LAUNCHER=sccache
               -DCMAKE_CXX_COMPILER_LAUNCHER=sccache                
               -DCA_MUX_TARGETS_TO_ENABLE=${{ inputs.mux_targets_enable }}
-              -DCA_ENABLE_API=${{ inputs.enable_api }}
+              -DCA_ENABLE_API="${{ inputs.enable_api }}"
               -DCA_LLVM_INSTALL_DIR=${{ inputs.llvm_install_dir }}
               -DCA_ENABLE_DEBUG_SUPPORT=${{ inputs.debug_support }}
               -DCMAKE_BUILD_TYPE=${{ inputs.build_type }}
