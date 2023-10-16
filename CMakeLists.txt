@@ -176,7 +176,7 @@ find_package(PythonInterp 3.6 REQUIRED)
 # When updating the version here, also update that used in the merge request
 # config
 find_package(ClangTools 16 COMPONENTS clang-format)
-find_package(ClangTools 12 COMPONENTS clang-tidy)
+find_package(ClangTools 15 COMPONENTS clang-tidy)
 if(TARGET ClangTools::clang-tidy)
   ca_option(CA_CLANG_TIDY_FLAGS STRING
     "Semi-color separated list of clang-tidy flags" "")
