@@ -27,7 +27,7 @@ extension::khr_command_buffer_mutable_dispatch::
 #else
                 usage_category::DISABLED
 #endif
-                    CA_CL_EXT_VERSION(0, 1, 0)) {
+                    CA_CL_EXT_VERSION(0, 9, 3)) {
 }
 
 void *extension::khr_command_buffer_mutable_dispatch::
@@ -60,7 +60,7 @@ cl_int extension::khr_command_buffer_mutable_dispatch::GetDeviceInfo(
     return CL_INVALID_DEVICE;
   }
 
-  cl_ndrange_kernel_command_properties_khr result = 0;
+  cl_command_properties_khr result = 0;
   if (CL_DEVICE_MUTABLE_DISPATCH_CAPABILITIES_KHR == param_name) {
     result = CL_MUTABLE_DISPATCH_ARGUMENTS_KHR;
   } else {
@@ -73,8 +73,7 @@ cl_int extension::khr_command_buffer_mutable_dispatch::GetDeviceInfo(
   constexpr size_t type_size = sizeof(result);
   if (nullptr != param_value) {
     OCL_CHECK(param_value_size < type_size, return CL_INVALID_VALUE);
-    *static_cast<cl_ndrange_kernel_command_properties_khr *>(param_value) =
-        result;
+    *static_cast<cl_command_properties_khr *>(param_value) = result;
   }
   OCL_SET_IF_NOT_NULL(param_value_size_ret, type_size);
   return CL_SUCCESS;
@@ -172,15 +171,14 @@ CL_API_ENTRY cl_int CL_API_CALL clGetMutableCommandInfoKHR(
     MUTABLE_COMMAND_ARRAY_INFO_CASE(CL_MUTABLE_DISPATCH_LOCAL_WORK_SIZE_KHR,
                                     command->local_size);
 
-    case CL_MUTABLE_DISPATCH_PROPERTIES_ARRAY_KHR: {
+    case CL_MUTABLE_COMMAND_PROPERTIES_ARRAY_KHR: {
       const auto &properties_list = command->properties_list;
-      OCL_SET_IF_NOT_NULL(param_value_size_ret,
-                          sizeof(cl_ndrange_kernel_command_properties_khr) *
-                              properties_list.size());
+      OCL_SET_IF_NOT_NULL(
+          param_value_size_ret,
+          sizeof(cl_command_properties_khr) * properties_list.size());
       OCL_CHECK(
-          param_value && param_value_size <
-                             sizeof(cl_ndrange_kernel_command_properties_khr) *
-                                 properties_list.size(),
+          param_value && param_value_size < sizeof(cl_command_properties_khr) *
+                                                properties_list.size(),
           return CL_INVALID_VALUE);
       if (param_value) {
         std::copy(std::begin(properties_list), std::end(properties_list),
