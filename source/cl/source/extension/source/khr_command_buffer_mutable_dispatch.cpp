@@ -27,7 +27,7 @@ extension::khr_command_buffer_mutable_dispatch::
 #else
                 usage_category::DISABLED
 #endif
-                    CA_CL_EXT_VERSION(0, 1, 0)) {
+                    CA_CL_EXT_VERSION(0, 9, 2)) {
 }
 
 void *extension::khr_command_buffer_mutable_dispatch::
@@ -82,9 +82,10 @@ cl_int extension::khr_command_buffer_mutable_dispatch::GetDeviceInfo(
 }
 
 #ifdef OCL_EXTENSION_cl_khr_command_buffer_mutable_dispatch
-CL_API_ENTRY cl_int CL_API_CALL
-clUpdateMutableCommandsKHR(cl_command_buffer_khr command_buffer,
-                           const cl_mutable_base_config_khr *mutable_config) {
+CL_API_ENTRY cl_int CL_API_CALL clUpdateMutableCommandsKHR(
+    cl_command_buffer_khr command_buffer, cl_uint num_configs,
+    const cl_command_buffer_update_type_khr *config_types,
+    const void **configs) {
   const tracer::TraceGuard<tracer::OpenCL> guard("clUpdateMutableCommandsKHR");
   OCL_CHECK(!command_buffer, return CL_INVALID_COMMAND_BUFFER_KHR);
   OCL_CHECK(!command_buffer->is_finalized, return CL_INVALID_OPERATION);
@@ -102,20 +103,20 @@ clUpdateMutableCommandsKHR(cl_command_buffer_khr command_buffer,
     return CL_INVALID_OPERATION;
   }
 
-  OCL_CHECK(!mutable_config, return CL_INVALID_VALUE);
-  OCL_CHECK(mutable_config->type != CL_STRUCTURE_TYPE_MUTABLE_BASE_CONFIG_KHR,
-            return CL_INVALID_VALUE);
+  OCL_CHECK(config_types && 0 == num_configs, return CL_INVALID_VALUE);
+  OCL_CHECK(!config_types && num_configs, return CL_INVALID_VALUE);
 
-  // Values for next would be defined by implementation of mutable mem commands
-  // layered extension. Later checks assume next is NULL and so the
-  // mutable_dispatch_list field must be set.
-  OCL_CHECK(mutable_config->next, return CL_INVALID_VALUE);
+  OCL_CHECK(configs && 0 == num_configs, return CL_INVALID_VALUE);
+  OCL_CHECK(!configs && num_configs, return CL_INVALID_VALUE);
 
-  OCL_CHECK(!mutable_config->mutable_dispatch_list ||
-                !mutable_config->num_mutable_dispatch,
-            return CL_INVALID_VALUE);
+  for (size_t i = 0; i < num_configs; i++) {
+    if (config_types[i] != CL_STRUCTURE_TYPE_MUTABLE_DISPATCH_CONFIG_KHR) {
+      return CL_INVALID_VALUE;
+    }
+  }
 
-  return command_buffer->updateCommandBuffer(*mutable_config);
+  const cargo::array_view<const void *> config_array(configs, num_configs);
+  return command_buffer->updateCommandBuffer(config_array);
 }
 
 CL_API_ENTRY cl_int CL_API_CALL clGetMutableCommandInfoKHR(

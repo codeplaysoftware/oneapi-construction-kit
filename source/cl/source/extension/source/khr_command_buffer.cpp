@@ -1072,19 +1072,17 @@ cargo::expected<mux_descriptor_info_s, cl_int> createArgumentDescriptor(
 }  // anonymous namespace
 
 [[nodiscard]] cl_int _cl_command_buffer_khr::updateCommandBuffer(
-    const cl_mutable_base_config_khr &mutable_config) {
+    const cargo::array_view<const void *> &mutable_configs) {
   const std::lock_guard<std::mutex> guard(mutex);
   const cl_device_id device = command_queue->device;
 
-  const cargo::array_view<const cl_mutable_dispatch_config_khr>
-      mutable_dispatch_configs(mutable_config.mutable_dispatch_list,
-                               mutable_config.num_mutable_dispatch);
-
   // Verify struct configures kernel arguments and return error if malformed
-  for (const auto &config : mutable_dispatch_configs) {
-    OCL_CHECK(config.type != CL_STRUCTURE_TYPE_MUTABLE_DISPATCH_CONFIG_KHR,
-              return CL_INVALID_VALUE);
+  for (const auto &mutable_config : mutable_configs) {
+    auto config_ptr =
+        static_cast<const cl_mutable_dispatch_config_khr *>(mutable_config);
 
+    OCL_CHECK(config_ptr == nullptr, return CL_INVALID_VALUE);
+    const cl_mutable_dispatch_config_khr &config = *config_ptr;
     OCL_CHECK(!config.command, return CL_INVALID_MUTABLE_COMMAND_KHR);
     OCL_CHECK(config.command->command_buffer != this,
               return CL_INVALID_MUTABLE_COMMAND_KHR);
@@ -1098,9 +1096,12 @@ cargo::expected<mux_descriptor_info_s, cl_int> createArgumentDescriptor(
         return CL_INVALID_OPERATION);
   }
 
-  for (auto config : mutable_dispatch_configs) {
+  for (const auto &mutable_config : mutable_configs) {
+    auto config =
+        static_cast<const cl_mutable_dispatch_config_khr *>(mutable_config);
+
     unsigned update_index = 0;
-    const unsigned num_args = config.num_args + config.num_svm_args;
+    const unsigned num_args = config->num_args + config->num_svm_args;
     UpdateInfo update_info;
     if (update_info.descriptors.alloc(num_args)) {
       return CL_OUT_OF_HOST_MEMORY;
@@ -1110,16 +1111,16 @@ cargo::expected<mux_descriptor_info_s, cl_int> createArgumentDescriptor(
       return CL_OUT_OF_HOST_MEMORY;
     }
 
-    if (update_info.pointers.alloc(config.num_svm_args)) {
+    if (update_info.pointers.alloc(config->num_svm_args)) {
       return CL_OUT_OF_HOST_MEMORY;
     }
 
-    const auto mutable_command = config.command;
+    const auto mutable_command = config->command;
     update_info.id = mutable_command->id;
-    cargo::array_view<const cl_mutable_dispatch_arg_khr> args(config.arg_list,
-                                                              config.num_args);
+    cargo::array_view<const cl_mutable_dispatch_arg_khr> args(config->arg_list,
+                                                              config->num_args);
 
-    for (unsigned i = 0; i < config.num_args; ++i) {
+    for (unsigned i = 0; i < config->num_args; ++i) {
       auto arg = args[i];
       update_info.indices[update_index] = arg.arg_index;
       auto descriptor =
@@ -1135,9 +1136,9 @@ cargo::expected<mux_descriptor_info_s, cl_int> createArgumentDescriptor(
 
 #ifdef OCL_EXTENSION_cl_intel_unified_shared_memory
     cargo::array_view<const cl_mutable_dispatch_arg_khr> svm_args(
-        config.arg_svm_list, config.num_svm_args);
+        config->arg_svm_list, config->num_svm_args);
 
-    for (unsigned i = 0; i < config.num_svm_args; ++i) {
+    for (unsigned i = 0; i < config->num_svm_args; ++i) {
       // Unpack the argument.
       const auto arg = svm_args[i];
       const auto arg_index = arg.arg_index;

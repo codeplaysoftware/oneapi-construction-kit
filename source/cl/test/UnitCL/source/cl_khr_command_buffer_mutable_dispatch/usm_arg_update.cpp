@@ -138,30 +138,28 @@ TEST_F(MutableDispatchUSMTest, InvalidArgList) {
 
   ASSERT_SUCCESS(clFinalizeCommandBufferKHR(command_buffer));
 
-  cl_mutable_dispatch_config_khr dispatch_config{
-      CL_STRUCTURE_TYPE_MUTABLE_DISPATCH_CONFIG_KHR,
-      nullptr,
-      command_handle,
-      0,
-      1 /* num_svm_args */,
-      0,
-      0,
-      nullptr,
-      nullptr /* arg_svm_list */,
-      nullptr,
-      nullptr,
-      nullptr,
-      nullptr};
-  const cl_mutable_base_config_khr mutable_config{
-      CL_STRUCTURE_TYPE_MUTABLE_BASE_CONFIG_KHR, nullptr, 1, &dispatch_config};
+  cl_mutable_dispatch_config_khr dispatch_config{command_handle,
+                                                 0,
+                                                 1 /* num_svm_args */,
+                                                 0,
+                                                 0,
+                                                 nullptr,
+                                                 nullptr /* arg_svm_list */,
+                                                 nullptr,
+                                                 nullptr,
+                                                 nullptr,
+                                                 nullptr};
 
-  ASSERT_EQ_ERRCODE(CL_INVALID_VALUE, clUpdateMutableCommandsKHR(
-                                          command_buffer, &mutable_config));
+  const cl_uint num_configs = 1;
+  const cl_command_buffer_update_type_khr config_types[1] = {
+      CL_STRUCTURE_TYPE_MUTABLE_DISPATCH_CONFIG_KHR};
+  const void *configs[1] = {&dispatch_config};
+  ASSERT_EQ_ERRCODE(CL_INVALID_VALUE,
+                    clUpdateMutableCommandsKHR(command_buffer, num_configs,
+                                               config_types, configs));
 
   const cl_mutable_dispatch_arg_khr arg{0, 0, device_ptrs[1]};
-  dispatch_config = {CL_STRUCTURE_TYPE_MUTABLE_DISPATCH_CONFIG_KHR,
-                     nullptr,
-                     command_handle,
+  dispatch_config = {command_handle,
                      0,
                      0 /* num_svm_args */,
                      0,
@@ -173,8 +171,9 @@ TEST_F(MutableDispatchUSMTest, InvalidArgList) {
                      nullptr,
                      nullptr};
 
-  ASSERT_EQ_ERRCODE(CL_INVALID_VALUE, clUpdateMutableCommandsKHR(
-                                          command_buffer, &mutable_config));
+  ASSERT_EQ_ERRCODE(CL_INVALID_VALUE,
+                    clUpdateMutableCommandsKHR(command_buffer, num_configs,
+                                               config_types, configs));
 }
 
 // Test clSetKernelMemPointerINTEL error code for CL_INVALID_ARG_INDEX if
@@ -192,25 +191,25 @@ TEST_F(MutableDispatchUSMTest, InvalidArgIndex) {
   ASSERT_SUCCESS(clFinalizeCommandBufferKHR(command_buffer));
 
   const cl_mutable_dispatch_arg_khr arg{2 /* arg index */, 0, device_ptrs[1]};
-  const cl_mutable_dispatch_config_khr dispatch_config{
-      CL_STRUCTURE_TYPE_MUTABLE_DISPATCH_CONFIG_KHR,
-      nullptr,
-      command_handle,
-      0,
-      1 /* num_svm_args */,
-      0,
-      0,
-      nullptr,
-      &arg /* arg_svm_list */,
-      nullptr,
-      nullptr,
-      nullptr,
-      nullptr};
-  const cl_mutable_base_config_khr mutable_config{
-      CL_STRUCTURE_TYPE_MUTABLE_BASE_CONFIG_KHR, nullptr, 1, &dispatch_config};
+  const cl_mutable_dispatch_config_khr dispatch_config{command_handle,
+                                                       0,
+                                                       1 /* num_svm_args */,
+                                                       0,
+                                                       0,
+                                                       nullptr,
+                                                       &arg /* arg_svm_list */,
+                                                       nullptr,
+                                                       nullptr,
+                                                       nullptr,
+                                                       nullptr};
 
-  ASSERT_EQ_ERRCODE(CL_INVALID_ARG_INDEX, clUpdateMutableCommandsKHR(
-                                              command_buffer, &mutable_config));
+  const cl_uint num_configs = 1;
+  const cl_command_buffer_update_type_khr config_types[1] = {
+      CL_STRUCTURE_TYPE_MUTABLE_DISPATCH_CONFIG_KHR};
+  const void *configs[1] = {&dispatch_config};
+  ASSERT_EQ_ERRCODE(CL_INVALID_ARG_INDEX,
+                    clUpdateMutableCommandsKHR(command_buffer, num_configs,
+                                               config_types, configs));
 }
 
 TEST_F(MutableDispatchUSMTest, InvalidArgValue) {
@@ -226,28 +225,29 @@ TEST_F(MutableDispatchUSMTest, InvalidArgValue) {
   ASSERT_SUCCESS(clFinalizeCommandBufferKHR(command_buffer));
 
   const cl_mutable_dispatch_arg_khr arg{0, 0, &out_buffer};
-  const cl_mutable_dispatch_config_khr dispatch_config{
-      CL_STRUCTURE_TYPE_MUTABLE_DISPATCH_CONFIG_KHR,
-      nullptr,
-      command_handle,
-      0,
-      1 /* num_svm_args */,
-      0,
-      0,
-      nullptr,
-      &arg /* arg_svm_list */,
-      nullptr,
-      nullptr,
-      nullptr,
-      nullptr};
-  const cl_mutable_base_config_khr mutable_config{
-      CL_STRUCTURE_TYPE_MUTABLE_BASE_CONFIG_KHR, nullptr, 1, &dispatch_config};
+  const cl_mutable_dispatch_config_khr dispatch_config{command_handle,
+                                                       0,
+                                                       1 /* num_svm_args */,
+                                                       0,
+                                                       0,
+                                                       nullptr,
+                                                       &arg /* arg_svm_list */,
+                                                       nullptr,
+                                                       nullptr,
+                                                       nullptr,
+                                                       nullptr};
 
   // The interaction between cl_intel_unified_shared_memory and
   // cl_khr_command_buffer_mutable_dispatch is not specified but we assume that
   // if clSetKernelArgMemPointerINTEL would not report invalid values, neither
   // will clUpdateMutableCommandsKHR.
-  ASSERT_SUCCESS(clUpdateMutableCommandsKHR(command_buffer, &mutable_config));
+
+  const cl_uint num_configs = 1;
+  const cl_command_buffer_update_type_khr config_types[1] = {
+      CL_STRUCTURE_TYPE_MUTABLE_DISPATCH_CONFIG_KHR};
+  const void *configs[1] = {&dispatch_config};
+  ASSERT_SUCCESS(clUpdateMutableCommandsKHR(command_buffer, num_configs,
+                                            config_types, configs));
 }
 
 // Tests for updating USM arguments to a command-buffer kernel command are
@@ -320,23 +320,23 @@ TEST_P(MutableDispatchUpdateUSMArgs, NoOffset) {
 
   // Update both the input and argument to second device USM allocation
   const cl_mutable_dispatch_arg_khr arg{0, 0, ptrB};
-  const cl_mutable_dispatch_config_khr dispatch_config{
-      CL_STRUCTURE_TYPE_MUTABLE_DISPATCH_CONFIG_KHR,
-      nullptr,
-      command_handle,
-      0,
-      1, /* num_svm_args */
-      0,
-      0,
-      nullptr,
-      &arg, /* arg_svm_list */
-      nullptr,
-      nullptr,
-      nullptr,
-      nullptr};
-  const cl_mutable_base_config_khr mutable_config{
-      CL_STRUCTURE_TYPE_MUTABLE_BASE_CONFIG_KHR, nullptr, 1, &dispatch_config};
-  ASSERT_SUCCESS(clUpdateMutableCommandsKHR(command_buffer, &mutable_config));
+  const cl_mutable_dispatch_config_khr dispatch_config{command_handle,
+                                                       0,
+                                                       1, /* num_svm_args */
+                                                       0,
+                                                       0,
+                                                       nullptr,
+                                                       &arg, /* arg_svm_list */
+                                                       nullptr,
+                                                       nullptr,
+                                                       nullptr,
+                                                       nullptr};
+  const cl_uint num_configs = 1;
+  const cl_command_buffer_update_type_khr config_types[1] = {
+      CL_STRUCTURE_TYPE_MUTABLE_DISPATCH_CONFIG_KHR};
+  const void *configs[1] = {&dispatch_config};
+  ASSERT_SUCCESS(clUpdateMutableCommandsKHR(command_buffer, num_configs,
+                                            config_types, configs));
 
   // Enqueue the command buffer.
   ASSERT_SUCCESS(clEnqueueCommandBufferKHR(0, nullptr, command_buffer, 0,
@@ -410,23 +410,23 @@ TEST_P(MutableDispatchUpdateUSMArgs, Offset) {
 
   // Update both the input and argument to second device USM allocation
   const cl_mutable_dispatch_arg_khr arg{0, 0, offset_ptrB};
-  const cl_mutable_dispatch_config_khr dispatch_config{
-      CL_STRUCTURE_TYPE_MUTABLE_DISPATCH_CONFIG_KHR,
-      nullptr,
-      command_handle,
-      0,
-      1, /* num_svm_args */
-      0,
-      0,
-      nullptr,
-      &arg, /* arg_svm_list */
-      nullptr,
-      nullptr,
-      nullptr,
-      nullptr};
-  const cl_mutable_base_config_khr mutable_config{
-      CL_STRUCTURE_TYPE_MUTABLE_BASE_CONFIG_KHR, nullptr, 1, &dispatch_config};
-  ASSERT_SUCCESS(clUpdateMutableCommandsKHR(command_buffer, &mutable_config));
+  const cl_mutable_dispatch_config_khr dispatch_config{command_handle,
+                                                       0,
+                                                       1, /* num_svm_args */
+                                                       0,
+                                                       0,
+                                                       nullptr,
+                                                       &arg, /* arg_svm_list */
+                                                       nullptr,
+                                                       nullptr,
+                                                       nullptr,
+                                                       nullptr};
+  const cl_uint num_configs = 1;
+  const cl_command_buffer_update_type_khr config_types[1] = {
+      CL_STRUCTURE_TYPE_MUTABLE_DISPATCH_CONFIG_KHR};
+  const void *configs[1] = {&dispatch_config};
+  ASSERT_SUCCESS(clUpdateMutableCommandsKHR(command_buffer, num_configs,
+                                            config_types, configs));
 
   // Enqueue the command buffer.
   ASSERT_SUCCESS(clEnqueueCommandBufferKHR(0, nullptr, command_buffer, 0,
@@ -535,23 +535,23 @@ TEST_F(MutableDispatchUSMTest, DISABLED_UpdateBlockingFree) {
 
   // Update both the input and argument to second device USM allocation
   const cl_mutable_dispatch_arg_khr arg{0, 0, usm_ptrB};
-  const cl_mutable_dispatch_config_khr dispatch_config{
-      CL_STRUCTURE_TYPE_MUTABLE_DISPATCH_CONFIG_KHR,
-      nullptr,
-      command_handle,
-      0,
-      1, /* num_svm_args */
-      0,
-      0,
-      nullptr,
-      &arg, /* arg_svm_list */
-      nullptr,
-      nullptr,
-      nullptr,
-      nullptr};
-  const cl_mutable_base_config_khr mutable_config{
-      CL_STRUCTURE_TYPE_MUTABLE_BASE_CONFIG_KHR, nullptr, 1, &dispatch_config};
-  ASSERT_SUCCESS(clUpdateMutableCommandsKHR(command_buffer, &mutable_config));
+  const cl_mutable_dispatch_config_khr dispatch_config{command_handle,
+                                                       0,
+                                                       1, /* num_svm_args */
+                                                       0,
+                                                       0,
+                                                       nullptr,
+                                                       &arg, /* arg_svm_list */
+                                                       nullptr,
+                                                       nullptr,
+                                                       nullptr,
+                                                       nullptr};
+  const cl_uint num_configs = 1;
+  const cl_command_buffer_update_type_khr config_types[1] = {
+      CL_STRUCTURE_TYPE_MUTABLE_DISPATCH_CONFIG_KHR};
+  const void *configs[1] = {&dispatch_config};
+  ASSERT_SUCCESS(clUpdateMutableCommandsKHR(command_buffer, num_configs,
+                                            config_types, configs));
 
   // Enqueue the command buffer.
   ASSERT_SUCCESS(clEnqueueCommandBufferKHR(0, nullptr, command_buffer, 0,
