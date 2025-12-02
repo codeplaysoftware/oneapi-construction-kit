@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout OCK
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - uses: actions/setup-python@v6
         with:
@@ -50,7 +50,7 @@ jobs:
            cmake --build build_doc --target doc_html
 
       - name: Checkout RFCs
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: rfcs
           path: rfcs
