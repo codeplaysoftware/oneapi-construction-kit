@@ -91,7 +91,7 @@ jobs:
         - ${{github.workspace}}:${{github.workspace}}
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       # installs tools, ninja, installs llvm and sets up ccache
       - name: setup-ubuntu
@@ -126,7 +126,7 @@ jobs:
         - ${{github.workspace}}:${{github.workspace}}
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       # installs tools, ninja, installs llvm and sets up ccache
       - name: setup-ubuntu
@@ -177,7 +177,7 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: setup-ubuntu-clang-format
         run:
@@ -203,7 +203,7 @@ jobs:
           arch: amd64
 
       - name: Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       # installs tools, ninja, installs llvm and sets up ccache
       - name: setup-windows
@@ -228,7 +228,7 @@ jobs:
     timeout-minutes: 60
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: setup-ubuntu
       uses: ./.github/actions/setup_build
       with:
@@ -250,7 +250,7 @@ jobs:
     timeout-minutes: 90 # offline needs longer timeout
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: setup-ubuntu
       uses: ./.github/actions/setup_build
       with:
@@ -272,7 +272,7 @@ jobs:
     timeout-minutes: 60
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: setup-ubuntu
       uses: ./.github/actions/setup_build
       with:
@@ -296,7 +296,7 @@ jobs:
     timeout-minutes: 60
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: setup-ubuntu
       uses: ./.github/actions/setup_build
       with:
@@ -306,7 +306,7 @@ jobs:
     - name: build and run ock
       uses: ./.github/actions/do_build_pr/run_ubuntu_gcc_x86_64_riscv_cl3_0
     - name: download cached opencl_cts artifact
-      uses: actions/cache/restore@v4
+      uses: actions/cache/restore@v5
       with:
         key: opencl_cts_host_x86_64_linux
         path: build/test_conformance
@@ -332,7 +332,7 @@ jobs:
     timeout-minutes: 60
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: setup-ubuntu
       uses: ./.github/actions/setup_build
       with:
@@ -345,7 +345,7 @@ jobs:
         build_targets: 'check-ock-UnitCL-group-vecz'
         disable_unitcl_vecz_checks: 'OFF'
     - name: download cached opencl_cts artifact
-      uses: actions/cache/restore@v4
+      uses: actions/cache/restore@v5
       with:
         key: opencl_cts_host_x86_64_linux
         path: build/test_conformance
@@ -368,7 +368,7 @@ jobs:
     timeout-minutes: 60
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: setup-ubuntu
       uses: ./.github/actions/setup_build
       with:
@@ -389,7 +389,7 @@ jobs:
     timeout-minutes: 90 # aarch64 needs longer timeout
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: setup-ubuntu
       uses: ./.github/actions/setup_build
       with:
@@ -411,7 +411,7 @@ jobs:
     timeout-minutes: 60
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - run: echo WORKSPACE is $GITHUB_WORKSPACE && echo PWD is `pwd` && ls -al
     - name: Run Clik
       run: |
@@ -437,7 +437,7 @@ jobs:
     timeout-minutes: 60
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: setup-ubuntu
       uses: ./.github/actions/setup_build
       with:
@@ -447,7 +447,7 @@ jobs:
     - name: build ock
       uses: ./.github/actions/do_build_pr/run_ubuntu_gcc_x86_64_refsi_g1_wi_cl3_0
     - name: download cached opencl_cts artifact
-      uses: actions/cache/restore@v4
+      uses: actions/cache/restore@v5
       with:
         key: opencl_cts_host_x86_64_linux
         path: build/test_conformance
@@ -473,7 +473,7 @@ jobs:
     timeout-minutes: 60
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: setup-ubuntu
       uses: ./.github/actions/setup_build
       with:
@@ -494,7 +494,7 @@ jobs:
     timeout-minutes: 60
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
     - name: setup-ubuntu
       uses: ./.github/actions/setup_build
       with:
@@ -517,7 +517,7 @@ jobs:
         - ${{github.workspace}}:${{github.workspace}}
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     # installs tools, ninja, installs llvm and sets up ccache
     - name: setup-ubuntu
@@ -527,7 +527,7 @@ jobs:
         llvm_source: ${{ inputs.llvm_source}}
         github_token: ${{ secrets.GITHUB_TOKEN }}
     - name: Checkout llvm-project
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       with:
         repository: llvm/llvm-project
         path: llvm-project
@@ -553,7 +553,7 @@ jobs:
         - ${{github.workspace}}:${{github.workspace}}
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     # installs tools, ninja, installs llvm and sets up ccache
     - name: setup-ubuntu
@@ -576,7 +576,7 @@ jobs:
         - ${{github.workspace}}:${{github.workspace}}
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     # installs tools, ninja, installs llvm and sets up ccache
     - name: setup-ubuntu
@@ -600,7 +600,7 @@ jobs:
         - ${{github.workspace}}:${{github.workspace}}
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     # installs tools, ninja, installs llvm and sets up ccache
     - name: setup-ubuntu
@@ -623,7 +623,7 @@ jobs:
         arch: amd64
 
     - name: Checkout repo
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     # installs tools, ninja, installs llvm and sets up ccache
     - name: setup-windows
@@ -647,7 +647,7 @@ jobs:
         - ${{github.workspace}}:${{github.workspace}}
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       # Install requirements
     - name: Install clang-tidy and parallel
       run: |

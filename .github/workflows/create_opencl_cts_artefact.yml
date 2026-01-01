@@ -40,7 +40,7 @@ jobs:
         - ${{github.workspace}}:${{github.workspace}}
     steps:
       - name: clone ock platform
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           sparse-checkout: |
             platform
@@ -63,7 +63,7 @@ jobs:
         - ${{github.workspace}}:${{github.workspace}}
     steps:
       - name: clone ock
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           sparse-checkout: |
             scripts

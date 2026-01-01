@@ -78,7 +78,7 @@ runs:
 
     - name: load llvm native
       if: inputs.llvm_source == 'cache'
-      uses: actions/cache/restore@v4
+      uses: actions/cache/restore@v5
       with:
         path: llvm_install/**
         key: llvm-${{ inputs.os }}-${{ steps.set_llvm_key.outputs.key_version }}-${{ steps.set_llvm_key.outputs.key_native_arch }}-v${{ inputs.llvm_version }}-${{ inputs.llvm_build_type }}
@@ -130,7 +130,7 @@ runs:
     # This is deprecated and will be removed soon.
     - name: load llvm cross cache
       if: inputs.cross_arch != 'none' && inputs.llvm_source == 'cache'
-      uses: actions/cache/restore@v4
+      uses: actions/cache/restore@v5
       with:
         path: llvm_install/**
         key: llvm-${{ inputs.os }}-${{ steps.set_llvm_key.outputs.key_version }}-${{ steps.set_llvm_key.outputs.key_arch }}-v${{ inputs.llvm_version }}-${{ inputs.llvm_build_type }}
@@ -149,7 +149,7 @@ runs:
 
       # note the PR testing usage should set 'save' to false, to avoid PR testing creating new caches on a branch
     - name: Setup ccache
-      uses: hendrikmuhs/ccache-action@bfa03e1de4d7f7c3e80ad9109feedd05c4f5a716 # v1.2.19
+      uses: hendrikmuhs/ccache-action@5ebbd400eff9e74630f759d94ddd7b6c26299639 # v1.2.20
       with:
         max-size: 200M
         key: ccache-build-${{ inputs.os }}
