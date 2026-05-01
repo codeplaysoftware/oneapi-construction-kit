@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout OCK
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.2
 
       - uses: actions/setup-python@v6
         with:
@@ -50,7 +50,7 @@ jobs:
            cmake --build build_doc --target doc_html
 
       - name: Checkout RFCs
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.2
         with:
           ref: rfcs
           path: rfcs
@@ -62,7 +62,7 @@ jobs:
           mv rfcs docs
 
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Copy OCK documentation
         shell: bash
@@ -77,7 +77,7 @@ jobs:
           destination: ./_site
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
 
   # Deployment job
   deploy:
@@ -89,4 +89,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
