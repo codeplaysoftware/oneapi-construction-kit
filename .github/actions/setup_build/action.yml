@@ -149,7 +149,7 @@ runs:
 
       # note the PR testing usage should set 'save' to false, to avoid PR testing creating new caches on a branch
     - name: Setup ccache
-      uses: hendrikmuhs/ccache-action@5ebbd400eff9e74630f759d94ddd7b6c26299639 # v1.2.20
+      uses: hendrikmuhs/ccache-action@d62db5f07c26379fc4b4e0916f098a92573c3b03 # v1.2.23
       with:
         max-size: 200M
         key: ccache-build-${{ inputs.os }}

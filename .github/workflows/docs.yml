@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.2
 
       - uses: actions/setup-python@v6
         with:
@@ -49,6 +49,6 @@ jobs:
           cmake --build build_doc --target doc_html
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: ${{github.workspace}}/build_doc/doc/html

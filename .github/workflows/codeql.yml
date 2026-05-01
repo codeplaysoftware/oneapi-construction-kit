@@ -24,7 +24,7 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.2
 
       # installs tools, ninja and installs llvm (default 20, RelAssert) and sets up cache
       - name: setup-ubuntu
@@ -35,7 +35,7 @@ jobs:
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL (${{ matrix.name }})
-        uses: github/codeql-action/init@v4.32.0
+        uses: github/codeql-action/init@v4.35.3
         with:
           languages: c-cpp
           build-mode: manual
@@ -56,7 +56,7 @@ jobs:
           build_targets:
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v4.32.0
+        uses: github/codeql-action/analyze@v4.35.3
         with:
           category: "/language:c-cpp"
 
@@ -76,7 +76,7 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.2
 
       # installs tools, ninja and installs llvm (default 18, RelAssert) and sets up cache
       - name: setup-ubuntu
@@ -87,7 +87,7 @@ jobs:
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL (${{ matrix.name }})
-        uses: github/codeql-action/init@v4.32.0
+        uses: github/codeql-action/init@v4.35.3
         with:
           languages: c-cpp
           build-mode: manual
@@ -96,7 +96,7 @@ jobs:
         uses: ./.github/actions/do_build_ock/do_build_m1
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v4.32.0
+        uses: github/codeql-action/analyze@v4.35.3
         with:
           category: "/language:c-cpp"
 
